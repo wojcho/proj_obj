@@ -10,8 +10,10 @@ liczbę za pomocą sortowania bąbelkowego.
 - :white_check_mark: 4.5 5 testów jednostkowych testujące procedury
 - :white_check_mark: 5.0 Skrypt w bashu do uruchamiania aplikacji w Pascalu via docker
 
-[Link do commita](https://github.com/wojcho/)
+[Link do commita](https://github.com/wojcho/proj_obj/commit/7d5a7596591b86c4dfe7133c884770260b37a068)
 
 Obraz kontenera: [wojcho/pascal_array_utilities](https://hub.docker.com/r/wojcho/pascal_array_utilities)
 
-<!-- TODO https://github.com/user-attachments/assets/filmik/ -->
+Uruchomienie obrazu zawierającego skompilowane pliki możliwe jest za pomocą skryptu `run.sh` 
+
+[Film przedstawiający działanie](https://github.com/wojcho/proj_obj/blob/main/1_pascal/pascal_tests.mp4)
