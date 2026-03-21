@@ -9,4 +9,4 @@ Baza danych dowolna, sugeruję SQLite.
 - :white_check_mark: 4.5 Należy stworzyć widoki do wszystkich kontrolerów [Commit](https://github.com/wojcho/proj_obj/commit/69441c5b0b4d61509189e6c597bcbeb96c6e1cc2)
 - :white_check_mark: 5.0 Stworzenie panelu administracyjnego [Commit](https://github.com/wojcho/proj_obj/commit/5ae7e76be87223e10fe02c16bf0f3f21df5ffaf1)
 
-[Nagranie]()
+[Nagranie](https://github.com/wojcho/proj_obj/blob/main/2_php/video.mp4)
