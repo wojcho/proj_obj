@@ -27,14 +27,7 @@ class DashboardController extends AbstractDashboardController
     {
          $urlGenerator = $this->container->get(AdminUrlGenerator::class);
 
-        return $this->render('admin.html.twig', [
-            'usersCount' => $this->em->getRepository(User::class)->count([]),
-            'productsCount' => $this->em->getRepository(Product::class)->count([]),
-            'discountsCount' => $this->em->getRepository(Discount::class)->count([]),
-            'usersUrl' => $urlGenerator->setController('App\\Controller\\Admin\\UserCrudController')->generateUrl(),
-            'productsUrl' => $urlGenerator->setController('App\\Controller\\Admin\\ProductCrudController')->generateUrl(),
-            'discountsUrl' => $urlGenerator->setController('App\\Controller\\Admin\\DiscountCrudController')->generateUrl(),
-        ]);
+        return $this->render('admin.html.twig', []);
 
         // Option 1. You can make your dashboard redirect to some common page of your backend
         //
@@ -60,7 +53,7 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Projobj');
+            ->setTitle('CRUD Shop');
     }
 
     public function configureMenuItems(): iterable

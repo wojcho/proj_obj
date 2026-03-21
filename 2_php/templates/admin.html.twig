@@ -1,23 +1,6 @@
 {% extends '@EasyAdmin/page/content.html.twig' %}
 
 {% block content %}
-<h1>Dashboard</h1>
+<p>Choose a view to manage objects</p>
 
-<div class="row">
-    <div class="col">
-        <h3>Users</h3>
-        <p>{{ usersCount }}</p>
-        <a href="{{ usersUrl }}">Manage Users</a>
-    </div>
-    <div class="col">
-        <h3>Products</h3>
-        <p>{{ productsCount }}</p>
-        <a href="{{ productsUrl }}">Manage Products</a>
-    </div>
-    <div class="col">
-        <h3>Discounts</h3>
-        <p>{{ discountsCount }}</p>
-        <a href="{{ discountsUrl }}">Manage Discounts</a>
-    </div>
-</div>
 {% endblock %}
