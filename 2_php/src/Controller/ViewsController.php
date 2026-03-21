@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 #[Route('/views')]
 class ViewsController extends AbstractController
 {
-    #[Route('/users', methods: ['GET'])]
+    #[Route('/users', name: 'app_views_users', methods: ['GET'])]
     public function users(EntityManagerInterface $em): Response
     {
         $users = $em->getRepository(User::class)->findAll();
@@ -22,7 +22,7 @@ class ViewsController extends AbstractController
         ]);
     }
 
-    #[Route('/products', methods: ['GET'])]
+    #[Route('/products', name: 'app_views_products', methods: ['GET'])]
     public function products(EntityManagerInterface $em): Response
     {
         $products = $em->getRepository(Product::class)->findAll();
@@ -31,7 +31,7 @@ class ViewsController extends AbstractController
         ]);
     }
 
-    #[Route('/discounts', methods: ['GET'])]
+    #[Route('/discounts', name: 'app_views_discounts', methods: ['GET'])]
     public function discounts(EntityManagerInterface $em): Response
     {
         $discounts = $em->getRepository(Discount::class)->findAll();

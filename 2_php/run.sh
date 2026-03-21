@@ -20,7 +20,9 @@ podman run -dit \
 podman cp "$PROJECT_DIR/." "$CONTAINER_NAME:/home/student/projobj/"
 
 # Warning, the commend below creates a new SQLite database each time
-podman exec -it "$CONTAINER_NAME" bash -c "php bin/console make:migration && php bin/console doctrine:migrations:migrate --no-interaction && symfony server:start --port=45173"
+# podman exec -it "$CONTAINER_NAME" bash -c "php bin/console make:migration && php bin/console doctrine:migrations:migrate --no-interaction && symfony server:start --port=45173"
+
+podman exec -it "$CONTAINER_NAME" bash -c "symfony server:start --port=45173"
 
 # Attach interactively
 # podman exec -it "$CONTAINER_NAME" bash
