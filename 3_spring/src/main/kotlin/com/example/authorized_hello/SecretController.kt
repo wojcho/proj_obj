@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 private val userHelloSecrets = mapOf("premier" to "Handling of this information requires utmost secrecy")
 
 @RestController
-class SecretController @Autowired constructor(private val authorization: EagerAuthorization) {
+class SecretController @Autowired constructor(private val authorization: LazyAuthorization) {
 
   private val counter = AtomicLong()
 
