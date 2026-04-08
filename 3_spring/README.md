@@ -11,4 +11,4 @@ Serwis do autoryzacji powinien być singletonem.
 - :white_check_mark: 4.5 Należy wstrzyknąć singleton do głównej klasy via @Autowired lub konstruktor (constructor injection) [Commit](https://github.com/wojcho/proj_obj/commit/346bf6c44234d5715c4eb60a7e487b820ce0b789) [Commit](https://github.com/wojcho/proj_obj/commit/680a8ca23b8f41a5504282b42c0ccbc4024b98df)
 - :white_check_mark: 5.0 Obok wersji Eager do wyboru powinna być wersja Singletona w wersji Lazy [Commit](https://github.com/wojcho/proj_obj/commit/d5cbfb72c2e0565dc2894d153fe3e354f4d858ce)
 
-<!-- [Nagranie]() -->
+[Nagranie](https://github.com/wojcho/proj_obj/blob/main/3_spring/video.mp4)
