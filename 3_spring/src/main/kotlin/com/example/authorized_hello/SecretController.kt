@@ -19,7 +19,7 @@ class SecretController @Autowired constructor(private val authorization: LazyAut
 
   @GetMapping("/secret/{username}")
   fun secret(@PathVariable("username") username: String, @RequestParam("password") password: String): Hello {
-    val secretOfUser = userHelloSecrets[username] ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Unrecognized username")
+    val secretOfUser = userHelloSecrets[username] ?: throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unrecognized username")
     if (!authorization.isAuthorized(username, password)) {
       throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credentials mismatch")
     }
