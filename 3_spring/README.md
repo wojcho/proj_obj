@@ -4,7 +4,7 @@ Aplikacja ma oczywiście zawierać jeden kontroler i powinna zostać napisana w 
 Oparta powinna zostać na frameworku Spring Boot.
 Serwis do autoryzacji powinien być singletonem.
 
-- :white_check_mark: 3.0 Należy stworzyć jeden kontroler wraz z danymi wyświetlanymi z listy na endpoincie w formacie JSON - Kotlin + Spring Boot <!-- [Commit]() -->
+- :white_check_mark: 3.0 Należy stworzyć jeden kontroler wraz z danymi wyświetlanymi z listy na endpoincie w formacie JSON - Kotlin + Spring Boot [Commit](https://github.com/wojcho/proj_obj/commit/ee7733665dd58b4c1d95ae4687c59637368ec9be)
 - :x: <!-- :white_check_mark: --> 3.5 Należy stworzyć klasę do autoryzacji (mock) jako Singleton w formie Eager <!-- [Commit]() -->
 - :x: <!-- :white_check_mark: --> 4.0 Należy obsłużyć dane autoryzacji przekazywane przez użytkownika <!-- [Commit]() -->
 - :x: <!-- :white_check_mark: --> 4.5 Należy wstrzyknąć singleton do głównej klasy via @Autowired lub konstruktor (constructor injection) <!-- [Commit]() -->
