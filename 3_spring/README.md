@@ -8,7 +8,7 @@ Serwis do autoryzacji powinien być singletonem.
 - :white_check_mark: 3.0 Należy stworzyć jeden kontroler wraz z danymi wyświetlanymi z listy na endpoincie w formacie JSON - Kotlin + Spring Boot [Commit](https://github.com/wojcho/proj_obj/commit/ee7733665dd58b4c1d95ae4687c59637368ec9be)
 - :white_check_mark: 3.5 Należy stworzyć klasę do autoryzacji (mock) jako Singleton w formie Eager [Commit](https://github.com/wojcho/proj_obj/commit/8369f077f3babf81fc9beb4f9b88a692345272b0)
 - :white_check_mark: 4.0 Należy obsłużyć dane autoryzacji przekazywane przez użytkownika [Commit](https://github.com/wojcho/proj_obj/commit/86765d8ceb944f6f4ab31a56d3e7a1ac585b3290)
-- :white_check_mark: 4.5 Należy wstrzyknąć singleton do głównej klasy via @Autowired lub konstruktor (constructor injection) [Commit](https://github.com/wojcho/proj_obj/commit/346bf6c44234d5715c4eb60a7e487b820ce0b789)
+- :white_check_mark: 4.5 Należy wstrzyknąć singleton do głównej klasy via @Autowired lub konstruktor (constructor injection) [Commit](https://github.com/wojcho/proj_obj/commit/346bf6c44234d5715c4eb60a7e487b820ce0b789) [Commit](https://github.com/wojcho/proj_obj/commit/680a8ca23b8f41a5504282b42c0ccbc4024b98df)
 - :x: <!-- :white_check_mark: --> 5.0 Obok wersji Eager do wyboru powinna być wersja Singletona w wersji Lazy <!-- [Commit]() -->
 
 <!-- [Nagranie]() -->
