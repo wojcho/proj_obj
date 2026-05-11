@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"strconv"
 
 	"net/http"
@@ -14,20 +13,26 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.RequestLogger())
 
+	proxy := NewWeatherProxy()
+
 	e.GET("/weather", func(c *echo.Context) error {
 		latStr := c.QueryParam("latitude")
 		lonStr := c.QueryParam("longitude")
 
 		lat, err := strconv.ParseFloat(latStr, 64)
 		if err != nil {
-			return c.String(http.StatusBadRequest, fmt.Sprintf("incorrect latitude: %v", err))
+			return c.String(http.StatusBadRequest, "incorrect latitude: "+err.Error())
 		}
 		lon, err := strconv.ParseFloat(lonStr, 64)
 		if err != nil {
-			return c.String(http.StatusBadRequest, fmt.Sprintf("incorrect longitude: %v", err))
+			return c.String(http.StatusBadRequest, "incorrect longitude: "+err.Error())
 		}
 
-		return c.String(http.StatusOK, fmt.Sprintf("weather at lat=%f lon=%f sunny", lat, lon))
+		w, err := proxy.FetchWeatherNow(lat, lon)
+		if err != nil {
+			return c.String(http.StatusInternalServerError, "failed to fetch weather: "+err.Error())
+		}
+		return c.JSON(http.StatusOK, w.ToDto())
 	})
 
 	if err := e.Start(":1323"); err != nil {
