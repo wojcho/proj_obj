@@ -4,17 +4,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math"
 	"net/http"
 	"net/url"
 	"time"
 
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
 type WeatherDto struct {
-	Latitude                           float64   `json:"latitude"`
-	Longitude                          float64   `json:"longitude"`
-	Time                               time.Time `json:"time"`
+	Latitude                           float64   `gorm:"uniqueIndex:idx_weather"`
+	Longitude                          float64   `gorm:"uniqueIndex:idx_weather"`
+	Time                               time.Time `gorm:"uniqueIndex:idx_weather"`
 	TemperatureCelsius                 float64   `json:"temperatureCelsius"`
 	RainMm                             float64   `json:"rainMm"`
 	PrecipitationProbabilityPercentage float64   `json:"precipitationProbabilityPercentage"`
@@ -66,16 +68,52 @@ type omResponse struct {
 type WeatherProxy struct {
 	baseURL string
 	client  *http.Client
+	db      *gorm.DB
 }
 
 func NewWeatherProxy() *WeatherProxy {
+	// open gorm sqlite DB
+	db, err := gorm.Open(sqlite.Open("database.db"), &gorm.Config{})
+	if err != nil {
+		panic("failed to open weather DB: " + err.Error())
+	}
+	// migrate schema
+	if err := db.AutoMigrate(&Weather{}); err != nil {
+		panic("failed to migrate weather schema: " + err.Error())
+	}
+
 	return &WeatherProxy{
 		baseURL: "https://api.open-meteo.com/v1/forecast",
 		client:  &http.Client{Timeout: 10 * time.Second},
+		db:      db,
 	}
 }
 
+func roundToHour(t time.Time) time.Time {
+	return t.Truncate(time.Hour).UTC()
+}
+
+func normalizeCoord(v float64) float64 {
+	return math.Round(v*10000) / 10000
+}
+
 func (p *WeatherProxy) FetchWeatherNow(latitude, longitude float64) (*Weather, error) {
+	latitude = normalizeCoord(latitude)
+	longitude = normalizeCoord(longitude)
+	now := time.Now().UTC()
+	targetHour := roundToHour(now)
+
+	// Check DB for existing record with equal latitude and longitude, and with time equal to targetHour
+	var existing Weather
+	if err := p.db.
+		Where("latitude = ? AND longitude = ? AND time = ?", latitude, longitude, targetHour).
+		First(&existing).Error; err == nil {
+		return &existing, nil
+	} else if err != nil && err != gorm.ErrRecordNotFound {
+		return nil, fmt.Errorf("db query error: %w", err)
+	}
+
+	// Build request URL
 	u, err := url.Parse(p.baseURL)
 	if err != nil {
 		return nil, fmt.Errorf("invalid base url: %w", err)
@@ -111,14 +149,21 @@ func (p *WeatherProxy) FetchWeatherNow(latitude, longitude float64) (*Weather, e
 	}
 
 	n := len(om.Hourly.Time)
-	weathers := make([]Weather, 0, n)
+	if n == 0 {
+		return nil, fmt.Errorf("empty hourly data")
+	}
+
+	// Collect weathers and upsert into DB
+	var closest Weather
+	minDiff := time.Duration(1<<63 - 1)
 	for i := 0; i < n; i++ {
-		t, _ := time.Parse("2006-01-02T15:04", om.Hourly.Time[i])
+		t, err := time.Parse("2006-01-02T15:04", om.Hourly.Time[i]) // iso8601
+		t = t.UTC()                                                 // default timezone GMT https://open-meteo.com/en/docs#api_documentation
 
 		w := Weather{
 			WeatherDto: WeatherDto{
-				Latitude:                           om.Latitude,
-				Longitude:                          om.Longitude,
+				Latitude:                           latitude,
+				Longitude:                          longitude,
 				Time:                               t,
 				TemperatureCelsius:                 om.Hourly.Temperature2m[i],
 				RainMm:                             om.Hourly.Rain[i],
@@ -131,21 +176,57 @@ func (p *WeatherProxy) FetchWeatherNow(latitude, longitude float64) (*Weather, e
 			},
 		}
 
-		weathers = append(weathers, w)
-	}
+		// Upsert by trying to find existing row by lat/lon/time, if exists then update else create
+		var dbRow Weather
+		err = p.db.Where("latitude = ? AND longitude = ? AND time = ?", w.Latitude, w.Longitude, w.Time).First(&dbRow).Error
+		if err == nil {
+			// Update fields but keep ID/unique
+			dbRow.TemperatureCelsius = w.TemperatureCelsius
+			dbRow.RainMm = w.RainMm
+			dbRow.PrecipitationProbabilityPercentage = w.PrecipitationProbabilityPercentage
+			dbRow.SnowfallCm = w.SnowfallCm
+			dbRow.VisibilityM = w.VisibilityM
+			dbRow.WeatherCodeWmo = w.WeatherCodeWmo
+			dbRow.SurfacePressureHpa = w.SurfacePressureHpa
+			dbRow.CloudCoverPercentage = w.CloudCoverPercentage
+			if err := p.db.Save(&dbRow).Error; err != nil {
+				return nil, fmt.Errorf("db save error: %w", err)
+			}
+			w = dbRow
+		} else if err == gorm.ErrRecordNotFound {
+			if err := p.db.Create(&w).Error; err != nil {
+				return nil, fmt.Errorf("db create error: %w", err)
+			}
+		} else {
+			return nil, fmt.Errorf("db query error: %w", err)
+		}
 
-	now := time.Now().UTC()
-	closestIdx := 0
-	minDiff := time.Duration(1<<63 - 1) // init with max possible, time.Duration is int64 of nanoseconds
-	for i, w := range weathers {
+		// Choose closest to now
 		d := w.Time.Sub(now)
 		if d < 0 {
 			d = -d
 		}
 		if d < minDiff {
 			minDiff = d
-			closestIdx = i
+			closest = w
 		}
 	}
-	return &weathers[closestIdx], nil
+
+	// If closest is zero value (meaning no rows inserted/read) then return error
+	if closest.Time.IsZero() {
+		return nil, fmt.Errorf("no correct weather rows")
+	}
+
+	// If the closest time equals targetHour then use closest record
+	if roundToHour(closest.Time) == targetHour {
+		return &closest, nil
+	}
+
+	// Try final DB lookup for the target hour
+	var final Weather
+	if err := p.db.Where("latitude = ? AND longitude = ? AND time = ?", latitude, longitude, targetHour).First(&final).Error; err == nil {
+		return &final, nil
+	}
+
+	return nil, fmt.Errorf("closest value found but it differs from target value")
 }
