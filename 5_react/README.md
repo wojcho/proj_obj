@@ -1,6 +1,6 @@
 **Zadanie 5** Wzorce behawioralne, React (JavaScript/Typescript)
 
-(Jest to takie samo zadanie jak [Zadanie 5 z przedmiotu E-Biznes](https://github.com/wojcho/e_biznes/tree/main/5_react))
+(Jest to takie samo zadanie jak [Zadanie 5 z przedmiotu E-Biznes](https://github.com/wojcho/e_biznes/tree/main/5_react), kod dostępny jest na podanym repozytorium)
 
 - :white_check_mark: 3.0 W ramach projektu należy stworzyć komponenty Produkty oraz Płatności; komponent Produkty powinien pobierać listę produktów z aplikacji serwerowej, natomiast komponent Płatności powinien wysyłać dane płatności do aplikacji serwerowej. [Commit](https://github.com/wojcho/e_biznes/commit/4deded9298c96fa027626eef9f0234de2ba62b19)
 - :white_check_mark: 3.5 Należy dodać komponent Koszyk wraz z osobnym widokiem; aplikacja powinna umożliwiać przechodzenie pomiędzy widokami przy użyciu routingu. [Commit](https://github.com/wojcho/e_biznes/commit/fa13a54e84eabeff01a841fbf97468c2218778f2)
