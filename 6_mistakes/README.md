@@ -1,0 +1,14 @@
+**Zadanie 6** Code Smells
+
+Należy sprawdzić kod projektów.
+Aby uzyskać ocenę 3.0, 3.5, 4.0 wystarczy sam JavaScript.
+Aby uzyskać ocenę 4.5, 5.0 konieczny jest sprawdzić JavaScript, Kotlin, GO.
+(Powyższa część polecenia została doprecyzowana zgodnie z tym w jaki sposób została zinterpretowana podczas rozwiązywania.)
+
+- :x: <!-- :white_check_mark: --> 3.0 Należy skonfigurować husky + lint-staged uruchamianie lintowania przed commitem ~~[Commit]()~~
+- :x: <!-- :white_check_mark: --> 3.5 Należy wyeliminować wszystkie bugi w kodzie w Sonarze (kod aplikacji klienckiej) ~~[Commit]()~~
+- :x: <!-- :white_check_mark: --> 4.0 Przeskanować oraz naprawić dowolny projekt open source narzędziem [CodeQL](https://codeql.github.com/) ~~[Commit]()~~
+- :x: <!-- :white_check_mark: --> 4.5 Należy usunąć problemy typu code smell w kodzie w Sonarze (Kotlin, GO, JavaScript). Należy dodać badge z Sonara ~~[Commit]()~~
+- :x: <!-- :white_check_mark: --> 5.0 Skonfigurować Github Actions z linterem oraz CodeQL ~~[Commit]()~~
+
+~~[Nagranie]()~~
