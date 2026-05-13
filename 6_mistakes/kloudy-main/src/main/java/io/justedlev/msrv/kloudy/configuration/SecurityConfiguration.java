@@ -28,6 +28,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import java.util.Collection;
 
@@ -45,7 +46,9 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(@NonNull HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf
+                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                )
                 .formLogin(AbstractHttpConfigurer::disable)
                 .oauth2ResourceServer(configurer -> configurer.jwt(Customizer.withDefaults()))
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
