@@ -1,0 +1,130 @@
+server:
+  port: 8901
+  servlet:
+    context-path: /api
+    application-display-name: ${spring.application.name}
+  error:
+    include-stacktrace: never
+    include-message: always
+    include-binding-errors: always
+spring:
+  mvc:
+    problemdetails:
+      enabled: true
+  servlet:
+    multipart:
+      max-file-size: 10GB
+      max-request-size: 10GB
+  application:
+    name: @project.name@
+    version: @project.version@
+  cloud:
+    config:
+      enabled: false
+  config:
+    import:
+      - classpath:/kloudy.yml
+  devtools:
+    restart:
+      enabled: false
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
+  data:
+    jdbc:
+      dialect: postgresql
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties:
+      org:
+        hibernate:
+          envers:
+            audit_strategy: org.hibernate.envers.strategy.ValidityAuditStrategy
+            default_schema: history
+            audit_table_suffix: _history
+            revision_field_name: rev_id
+            revision_type_field_name: rev_type
+            store_data_at_delete: true
+      #            audit_table_prefix:
+      hibernate:
+        enable_lazy_load_no_trans: true
+        default_schema: kloudy
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KC_ISSUER_URI}
+          jwk-set-uri: ${KC_JWKS_URI}
+        opaquetoken:
+          introspection-uri: ${KC_INTROSPECTION_URI}
+          client-id: ${KC_CLIENT_ID}
+          client-secret: ${KC_CLIENT_SECRET}
+eureka:
+  instance:
+    instance-id: ${spring.application.name}
+    app-group-name: justedlev-msrv
+    appname: ${spring.application.name}
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://${spring.security.user.name}:${spring.security.user.password}@${eureka.instance.hostname}:8761/eureka/
+logging:
+  file:
+    path: ./logs
+    name: ${LOGGING_FILE_PATH:${logging.file.path}}/latest.log
+  threshold:
+    console: info
+  level:
+    root: info
+    web: debug
+    sql: debug
+management:
+  info:
+    build:
+      enabled: true
+    os:
+      enabled: true
+    defaults:
+      enabled: true
+    java:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+security:
+  whitelist:
+    GET:
+      - /webjars/**
+      - /v3/api-docs/**
+      - /*/v3/api-docs/**
+      - /*/*/v3/api-docs/**
+      - /swagger-ui.html
+      - /swagger-ui/**
+      - /swagger-resources
+      - /swagger-resources/**
+      - /configuration/ui
+      - /configuration/security
+      - /actuator/**
+      - /*/actuator/**
+      - /error
+    POST:
+      - /sso/logout
+      - /logout
+springdoc:
+  show-actuator: true
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json

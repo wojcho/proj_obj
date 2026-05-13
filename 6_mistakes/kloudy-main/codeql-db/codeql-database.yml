@@ -1,0 +1,12 @@
+---
+sourceLocationPrefix: /home/wjh/Downloads/kloudy-main
+baselineLinesOfCode: 887
+unicodeNewlines: false
+columnKind: utf16
+primaryLanguage: java
+creationMetadata:
+  cliVersion: 2.25.4
+  creationTime: 2026-05-13T13:20:17.394084491Z
+overlayBaseDatabase: false
+overlayDatabase: false
+finalised: true

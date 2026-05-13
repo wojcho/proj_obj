@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: @project.name@
+  config:
+    import:
+      - 'optional:configserver:'
+  cloud:
+    config:
+      enabled: false

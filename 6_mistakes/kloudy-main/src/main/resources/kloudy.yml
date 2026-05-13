@@ -1,0 +1,3 @@
+kloudy:
+  root: ./.tmp
+  enabled: false

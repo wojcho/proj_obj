@@ -1,0 +1,11 @@
+-Duser.timezone=UTC
+-Duser.language=en
+-Dspring.devtools.add-properties=true
+-Dlogging.level.web=trace
+-Dlogging.level.sql=trace
+-Dlogging.level.org.springframework.security=trace
+-Dlogging.level.org.hibernate.type=debug
+-Dlogging.level.io.justedlev.msrv=debug
+
+# -Dspring.cloud.discovery.enabled=false
+# -Deureka.client.enabled=false
