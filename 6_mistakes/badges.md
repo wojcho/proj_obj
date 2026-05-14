@@ -1,0 +1,3 @@
+Kotlin [![Code Smells](http://localhost:9000/api/project_badges/measure?project=ktor&metric=code_smells&token=sqb_a794b03a807c7cb0f96fa9a3a7f0e79865762fa1)](http://localhost:9000/dashboard?id=ktor)
+Go [![Code Smells](http://localhost:9000/api/project_badges/measure?project=shop&metric=code_smells&token=sqb_7701013d4762bee87c4bd01ab7ee5b6f6f64daf3)](http://localhost:9000/dashboard?id=shop)
+JavaScript [![Code Smells](http://localhost:9000/api/project_badges/measure?project=frontend&metric=code_smells&token=sqb_77044f9bcd7d2f5b23bf972dd1e02093fed56995)](http://localhost:9000/dashboard?id=frontend)
