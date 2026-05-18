@@ -5,6 +5,7 @@ struct ProductDTO: Content {
     var id: UUID?
     var title: String?
     var price: UInt64?
+    var categoryIDs: [UUID]?
     
     func toModel() -> Product {
         let model = Product()

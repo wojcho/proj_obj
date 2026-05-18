@@ -12,6 +12,8 @@ public func configure(_ app: Application) async throws {
     app.databases.use(DatabaseConfigurationFactory.sqlite(.file("db.sqlite")), as: .sqlite)
 
     app.migrations.add(CreateProduct())
+    app.migrations.add(CreateCategory())
+    app.migrations.add(CreateProductCategoryPivot())
 
     app.views.use(.leaf)
 
