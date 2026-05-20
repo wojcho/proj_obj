@@ -14,6 +14,7 @@ public func configure(_ app: Application) async throws {
     app.migrations.add(CreateProduct())
     app.migrations.add(CreateCategory())
     app.migrations.add(CreateProductCategoryPivot())
+    app.migrations.add(CreateStickyNote())
 
     app.views.use(.leaf)
 

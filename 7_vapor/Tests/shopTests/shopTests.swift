@@ -2,6 +2,7 @@
 import VaporTesting
 import Testing
 import Fluent
+import struct Foundation.Date
 
 @Suite("App Tests with DB", .serialized)
 struct shopTests {
@@ -289,6 +290,87 @@ struct shopTests {
         }
     }
 
+    @Test("Create Sticky Note")
+    func createStickyNote() async throws {
+        let now = Date(timeIntervalSince1970: floor(Date().timeIntervalSince1970))
+        let newDTO = StickyNoteDTO(id: nil, title: "test1", validSince: now, validUntil: now.addingTimeInterval(3600))
+        
+        try await withApp { app in
+            try await app.testing().test(.POST, "sticky-notes", beforeRequest: { req in
+                try req.content.encode(newDTO)
+            }, afterResponse: { res async throws in
+                #expect(res.status == .ok)
+                let models = try await StickyNote.query(on: app.db).all()
+                #expect(models.count == 1)
+                let storedDTO = models[0].toDTO()
+
+                #expect(storedDTO.title == newDTO.title)
+                #expect(storedDTO.validSince == newDTO.validSince)
+                #expect(storedDTO.validUntil == newDTO.validUntil)
+            })
+        }
+    }
+
+    @Test("Read Sticky Note")
+    func readStickyNote() async throws {
+        try await withApp { app in
+            let now = Date(timeIntervalSince1970: floor(Date().timeIntervalSince1970))
+            let note = StickyNote(title: "read-note", validSince: now, validUntil: now.addingTimeInterval(3600))
+            try await note.create(on: app.db)
+
+            let saved = try await StickyNote.query(on: app.db).filter(\._$id == note.id!).first()
+            #expect(saved != nil)
+
+            try await app.testing().test(.GET, "sticky-notes/\(note.requireID())", afterResponse: { res async throws in
+                #expect(res.status == .ok)
+                let dto = try res.content.decode(StickyNoteDTO.self)
+                #expect(dto == saved!.toDTO())
+            })
+        }
+    }
+
+    @Test("Update Sticky Note")
+    func updateStickyNote() async throws {
+        try await withApp { app in
+            let now = Date(timeIntervalSince1970: floor(Date().timeIntervalSince1970))
+            let note = StickyNote(title: "old-title", validSince: now, validUntil: now.addingTimeInterval(3600))
+            try await note.create(on: app.db)
+
+            let newTitle = "updated-title"
+            let newSince = now.addingTimeInterval(10)
+            let newUntil = now.addingTimeInterval(7200)
+            let updateDTO = StickyNoteDTO(id: nil, title: newTitle, validSince: newSince, validUntil: newUntil)
+
+            try await app.testing().test(.PATCH, "sticky-notes/\(note.requireID())", beforeRequest: { req in
+                try req.content.encode(updateDTO)
+            }, afterResponse: { res async throws in
+                #expect(res.status == .ok)
+                let reloaded = try await StickyNote.query(on: app.db).filter(\._$id == note.id!).first()
+                #expect(reloaded != nil)
+                let dto = reloaded!.toDTO()
+                #expect(dto.title == newTitle)
+                #expect(dto.validSince == newSince)
+                #expect(dto.validUntil == newUntil)
+            })
+        }
+    }
+
+    @Test("Delete Sticky Note")
+    func deleteStickyNote() async throws {
+        let now = Date(timeIntervalSince1970: floor(Date().timeIntervalSince1970))
+        let testStickyNotes = [StickyNote(title: "test1", validSince: now, validUntil: now.addingTimeInterval(3600)), StickyNote(title: "test2", validSince: now, validUntil: now.addingTimeInterval(3600))]
+        
+        try await withApp { app in
+            try await testStickyNotes.create(on: app.db)
+            
+            try await app.testing().test(.DELETE, "sticky-notes/\(testStickyNotes[0].requireID())", afterResponse: { res async throws in
+                #expect(res.status == .noContent)
+                let model = try await Product.find(testStickyNotes[0].id, on: app.db)
+                #expect(model == nil)
+            })
+        }
+    }
+
 }
 
 extension ProductDTO: Equatable {
@@ -300,5 +382,14 @@ extension ProductDTO: Equatable {
 extension CategoryDTO: Equatable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id && lhs.name == rhs.name
+    }
+}
+
+extension StickyNoteDTO: Equatable {
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.id == rhs.id
+        && lhs.title == rhs.title
+        && lhs.validSince == rhs.validSince
+        && lhs.validUntil == rhs.validUntil
     }
 }
