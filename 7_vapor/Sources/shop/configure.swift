@@ -3,6 +3,7 @@ import Fluent
 import FluentSQLiteDriver
 import Leaf
 import Vapor
+import Redis
 
 // configures your application
 public func configure(_ app: Application) async throws {
@@ -31,6 +32,11 @@ public func configure(_ app: Application) async throws {
 
     app.databases.use(DatabaseConfigurationFactory.sqlite(.file("db.sqlite")), as: .sqlite)
 
+    app.redis.configuration = try RedisConfiguration(
+        hostname: "127.0.0.1",
+        port: 6379
+    )
+
     app.views.use(.leaf)
 
     app.migrations.add(CreateProduct())
@@ -40,4 +46,7 @@ public func configure(_ app: Application) async throws {
 
     // register routes
     try routes(app)
+
+    print("Working dir:", DirectoryConfiguration.detect().workingDirectory)
+    print("Views dir:", app.directory.viewsDirectory)
 }
