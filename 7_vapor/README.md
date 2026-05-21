@@ -13,7 +13,7 @@ https://www.heroku.com/github-students
 - :white_check_mark: 4.5 Należy wykorzystać Redis do przechowywania danych [Commit](https://github.com/wojcho/proj_obj/commit/4772b1d80acc44cae1d9dc6ba2365fdf223a9ad0)
 - :x: <!-- :white_check_mark: --> 5.0 Wrzucić aplikację na Heroku ~~[Commit]()~~
 
-~~[Nagranie]()~~
+[Nagranie](https://github.com/wojcho/proj_obj/blob/main/7_vapor/video.mp4)
 
 ---
 
