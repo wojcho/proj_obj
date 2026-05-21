@@ -1,0 +1,76 @@
+#extend("base"):
+  #export("title"):
+    Edit Category
+  #endexport
+
+  #export("body"):
+    <h1>Edit Category</h1>
+
+    <form id="editCategoryForm">
+      <label>
+        Name<br>
+        <input type="text" id="name" value="#(category.name)">
+      </label><br>
+
+      <label>Products</label><br>
+
+      #if(products):
+        #for(prod in products):
+          <label>
+            <input
+              type="checkbox"
+              name="productIDs"
+              value="#(prod.id)"
+              #if(category.productIDs):
+                #for(cpID in category.productIDs):
+                  #if(cpID == prod.id):
+                    checked
+                  #endif
+                #endfor
+              #endif
+            >
+            #(prod.title)
+          </label><br>
+        #endfor
+      #else:
+        <p>No products available.</p>
+      #endif
+
+      <button type="submit">Save</button>
+    </form>
+
+    <a href="/categories/#(category.id)">Cancel</a>
+
+    <script>
+      const form = document.getElementById("editCategoryForm");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const productIDs = Array.from(
+          document.querySelectorAll('input[name="productIDs"]:checked')
+        ).map(cb => cb.value);
+
+        const payload = {
+          name: document.getElementById("name").value,
+          productIDs
+        };
+
+        const res = await fetch("/api/categories/#(category.id)", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          window.location.href = "/categories/#(category.id)";
+        } else {
+          const text = await res.text();
+          alert("Failed to update: " + text);
+        }
+      });
+    </script>
+  #endexport
+#endextend

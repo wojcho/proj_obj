@@ -21,6 +21,21 @@ struct StickyNoteController: RouteCollection {
 
     @Sendable
     func create(req: Request) async throws -> StickyNoteDTO {
+        guard var body = req.body.data else {
+        throw Abort(.badRequest)
+    }
+
+        if let bodyString = body.readString(length: body.readableBytes) {
+            req.logger.info("Raw body: \(bodyString)")
+        } else {
+            let bytes = body.getBytes(at: body.readerIndex,
+                                    length: body.readableBytes) ?? []
+
+            let hex = bytes.map { String(format: "%02x", $0) }.joined()
+
+            req.logger.info("Raw body (hex): \(hex)")
+        }
+        
         let dto = try req.content.decode(StickyNoteDTO.self)
         let model = dto.toModel()
 

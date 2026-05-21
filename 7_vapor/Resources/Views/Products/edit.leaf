@@ -1,0 +1,82 @@
+#extend("base"):
+  #export("title"):
+    Edit Product
+  #endexport
+
+  #export("body"):
+    <h1>Edit Product</h1>
+
+    <form id="editForm">
+      <label>
+        Title<br>
+        <input type="text" id="title" value="#(product.title)">
+      </label><br>
+
+      <label>
+        Price<br>
+        <input type="number" id="price" value="#(product.price)" step="1" min="0">
+      </label><br>
+
+      <label>Categories</label><br>
+
+      #if(categories):
+        #for(cat in categories):
+          <label>
+            <input
+              type="checkbox"
+              name="categoryIDs"
+              value="#(cat.id)"
+              #if(product.categoryIDs):
+                #for(pcID in product.categoryIDs):
+                  #if(pcID == cat.id):
+                    checked
+                  #endif
+                #endfor
+              #endif
+            >
+            #(cat.name)
+          </label><br>
+        #endfor
+      #else:
+        <p>No categories available.</p>
+      #endif
+
+      <button type="submit">Save</button>
+    </form>
+
+    <a href="/products/#(product.id)">Cancel</a>
+
+    <script>
+      const form = document.getElementById("editForm");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const categoryIDs = Array.from(
+          document.querySelectorAll('input[name="categoryIDs"]:checked')
+        ).map(cb => cb.value);
+
+        const payload = {
+          title: document.getElementById("title").value,
+          price: Number(document.getElementById("price").value),
+          categoryIDs
+        };
+
+        const res = await fetch("/api/products/#(product.id)", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          window.location.href = "/products/#(product.id)";
+        } else {
+          const text = await res.text();
+          alert("Failed to update: " + text);
+        }
+      });
+    </script>
+  #endexport
+#endextend

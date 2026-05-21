@@ -1,12 +1,16 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
+#extend("base"):
+    #export("title"):
+        Home
+    #endexport
 
-  <title>#(title)</title>
-</head>
-
-<body>
-  <h1>#(title)</h1>
-</body>
-</html>
+    #export("body"):
+        <h1>Home</h1>
+        <nav>
+          <ul>
+            <li><a href="/products">Products</a></li>
+            <li><a href="/categories">Categories</a></li>
+            <li><a href="/sticky-notes">Sticky Notes</a></li>
+          </ul>
+        </nav>
+    #endexport
+#endextend

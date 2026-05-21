@@ -1,0 +1,25 @@
+#extend("base"):
+  #export("title"):
+    Create Category
+  #endexport
+  #export("body"):
+    <h1>Create Category</h1>
+    <form action="/api/categories" method="post">
+      <label>Name<br><input type="text" name="name"></label><br>
+      <label>Products<br>
+        #if(products):
+          #for(prod in products):
+            <label>
+              <input type="checkbox" name="productIDs[]" value="#(prod.id)">
+              #(prod.title)
+            </label><br>
+          #endfor
+        #else:
+          <p>No products available.</p>
+        #endif
+      </label>
+      <button type="submit">Create</button>
+    </form>
+    <a href="/categories">Back</a>
+  #endexport
+#endextend

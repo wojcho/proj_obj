@@ -1,0 +1,33 @@
+#extend("base"):
+  #export("title"):
+    Sticky Note
+  #endexport
+  #export("body"):
+    <h1>#(stickyNote.title)</h1>
+    <p><strong>Valid since:</strong> #date(stickyNote.validSince, "yyyy-MM-dd")</p>
+    <p><strong>Valid until:</strong> #date(stickyNote.validUntil, "yyyy-MM-dd")</p>
+
+    <a href="/sticky-notes/#(stickyNote.id)/edit">Edit</a>
+    <button onclick="deleteNote('#(stickyNote.id)')">Delete</button>
+    <br><a href="/sticky-notes">Back</a>
+
+    <script>
+      async function deleteNote(id) {
+        const confirmed = confirm("Delete this note?");
+        if (!confirmed) return;
+        console.log(id)
+
+        const res = await fetch(`/api/sticky-notes/${id}`, {
+          method: "DELETE"
+        });
+
+        if (res.ok) {
+          window.location.href = "/sticky-notes";
+        } else {
+          const text = await res.text();
+          alert("Failed to delete: " + text);
+        }
+      }
+    </script>
+  #endexport
+#endextend

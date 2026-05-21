@@ -1,0 +1,40 @@
+#extend("base"):
+  #export("title"):
+    Category
+  #endexport
+  #export("body"):
+    <h1>#(category.name)</h1>
+    <p><strong>Products:</strong>
+      #if(category.productIDs):
+        <ul>
+          #for(pID in category.productIDs):
+            <li><a href="/products/#(pID)">#(pID)</a></li>
+          #endfor
+        </ul>
+      #else:
+        -
+      #endif
+    </p>
+
+    <a href="/categories/#(category.id)/edit">Edit</a>
+    <button onclick="deleteCategory('#(category.id)')">Delete</button>
+    <br><a href="/categories">Back to Index</a>
+    <script>
+      async function deleteCategory(id) {
+        const confirmed = confirm("Delete this category?");
+        if (!confirmed) return;
+
+        const res = await fetch(`/api/categories/${id}`, {
+          method: "DELETE"
+        });
+
+        if (res.ok) {
+          window.location.href = "/categories";
+        } else {
+          const text = await res.text();
+          alert("Failed to delete: " + text);
+        }
+      }
+    </script>
+  #endexport
+#endextend

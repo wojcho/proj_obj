@@ -1,0 +1,26 @@
+#extend("base"):
+  #export("title"):
+    Create Product
+  #endexport
+  #export("body"):
+    <h1>Create Product</h1>
+    <form action="/api/products" method="post">
+      <label>Title<br><input type="text" name="title" value=""></label><br>
+      <label>Price<br><input type="number" name="price" step="1" min="0"></label><br>
+      <label>Categories<br>
+        #if(categories):
+          #for(cat in categories):
+            <label>
+              <input type="checkbox" name="categoryIDs[]" value="#(cat.id)">
+              #(cat.name)
+            </label><br>
+          #endfor
+        #else:
+          <p>No categories available.</p>
+        #endif
+      </label>
+      <button type="submit">Create</button>
+    </form>
+    <a href="/products">Back to Index</a>
+  #endexport
+#endextend

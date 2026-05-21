@@ -1,0 +1,50 @@
+#extend("base"):
+  #export("title"):
+    Products
+  #endexport
+  #export("body"):
+    <h1>Products</h1>
+    <a href="/products/new">Create product</a>
+    <table>
+      <thead><tr><th>Title</th><th>Price</th><th>Categories</th><th>Actions</th></tr></thead>
+      <tbody>
+        #for(product in products):
+          <tr>
+            <td><a href="/products/#(product.id)">#(product.title)</a></td>
+            <td>$#(product.price)</td>
+            <td>
+              #if(product.categoryIDs):
+                #for(catID in product.categoryIDs):
+                  <a href="/categories/#(catID)">#(catID)</a>
+                #endfor
+              #else:
+                -
+              #endif
+            </td>
+            <td>
+              <a href="/products/#(product.id)/edit">Edit</a>
+              <button onclick="deleteProduct('#(product.id)')">Delete</button>
+            </td>
+          </tr>
+        #endfor
+      </tbody>
+    </table>
+    <script>
+      async function deleteProduct(id) {
+        const confirmed = confirm("Delete this product?");
+        if (!confirmed) return;
+
+        const res = await fetch(`/api/products/${id}`, {
+          method: "DELETE"
+        });
+
+        if (res.ok) {
+          window.location.href = "/products";
+        } else {
+          const text = await res.text();
+          alert("Failed to delete: " + text);
+        }
+      }
+    </script>
+  #endexport
+#endextend

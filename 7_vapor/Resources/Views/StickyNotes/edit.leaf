@@ -1,0 +1,82 @@
+#extend("base"):
+  #export("title"):
+    Edit Sticky Note
+  #endexport
+
+  #export("body"):
+    <h1>Edit Sticky Note</h1>
+
+    <form id="note-form">
+      <label>
+        Title<br>
+        <input type="text" id="title" value="#(stickyNote.title)">
+      </label><br>
+
+      <label>
+        Valid Since<br>
+        <input
+          type="date"
+          id="validSincePicker"
+          value="#date(stickyNote.validSince, "yyyy-MM-dd")"
+        >
+      </label><br>
+
+      <label>
+        Valid Until<br>
+        <input
+          type="date"
+          id="validUntilPicker"
+          value="#date(stickyNote.validUntil, "yyyy-MM-dd")"
+        >
+      </label><br>
+
+      <button type="submit">Save</button>
+    </form>
+
+    <a href="/sticky-notes/#(stickyNote.id)">Cancel</a>
+
+    <script>
+      const form = document.getElementById("note-form");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const validSincePicker =
+          document.getElementById("validSincePicker");
+
+        const validUntilPicker =
+          document.getElementById("validUntilPicker");
+
+        const payload = {
+          title: document.getElementById("title").value,
+          validSince: validSincePicker.value
+            ? validSincePicker.value + "T00:00:00Z"
+            : null,
+          validUntil: validUntilPicker.value
+            ? validUntilPicker.value + "T00:00:00Z"
+            : null
+        };
+
+        const res = await fetch(
+          "/api/sticky-notes/#(stickyNote.id)",
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+          }
+        );
+
+        if (res.ok) {
+          window.location.href =
+            "/sticky-notes/#(stickyNote.id)";
+        } else {
+          const text = await res.text();
+          alert("Failed to update: " + text);
+        }
+      });
+    </script>
+
+  #endexport
+#endextend

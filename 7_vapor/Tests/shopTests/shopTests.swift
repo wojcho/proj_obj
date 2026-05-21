@@ -28,7 +28,7 @@ struct shopTests {
             try await sampleProducts.create(on: app.db)
             let saved = try await Product.query(on: app.db).with(\.$categories).all()
             
-            try await app.testing().test(.GET, "products", afterResponse: { res async throws in
+            try await app.testing().test(.GET, "api/products", afterResponse: { res async throws in
                 #expect(res.status == .ok)
                 #expect(try
                     res.content.decode([ProductDTO].self).sorted(by: { ($0.title ?? "") < ($1.title ?? "") }) ==
@@ -43,7 +43,7 @@ struct shopTests {
         let newDTO = ProductDTO(id: nil, title: "test", price: 1234)
         
         try await withApp { app in
-            try await app.testing().test(.POST, "products", beforeRequest: { req in
+            try await app.testing().test(.POST, "api/products", beforeRequest: { req in
                 try req.content.encode(newDTO)
             }, afterResponse: { res async throws in
                 #expect(res.status == .ok)
@@ -64,7 +64,7 @@ struct shopTests {
                 .first()
             #expect(created != nil)
 
-            try await app.testing().test(.GET, "products/\(product.requireID())", afterResponse: { res async throws in
+            try await app.testing().test(.GET, "api/products/\(product.requireID())", afterResponse: { res async throws in
                 #expect(res.status == .ok)
                 let dto = try res.content.decode(ProductDTO.self)
                 #expect(dto == created!.toDTO())
@@ -81,7 +81,7 @@ struct shopTests {
             let newTitle = "new-title"
             let newPrice = 5678
             let updateDTO = ProductDTO(id: nil, title: "new-title", price: 5678)
-            try await app.testing().test(.PATCH, "products/\(product.requireID())", beforeRequest: { req in
+            try await app.testing().test(.PATCH, "api/products/\(product.requireID())", beforeRequest: { req in
                 try req.content.encode(updateDTO)
             }, afterResponse: { res async throws in
                 #expect(res.status == .ok)
@@ -104,7 +104,7 @@ struct shopTests {
         try await withApp { app in
             try await testProducts.create(on: app.db)
             
-            try await app.testing().test(.DELETE, "products/\(testProducts[0].requireID())", afterResponse: { res async throws in
+            try await app.testing().test(.DELETE, "api/products/\(testProducts[0].requireID())", afterResponse: { res async throws in
                 #expect(res.status == .noContent)
                 let model = try await Product.find(testProducts[0].id, on: app.db)
                 #expect(model == nil)
@@ -131,7 +131,7 @@ struct shopTests {
 
             let saved = try await Category.query(on: app.db).with(\.$products).all()
 
-            try await app.testing().test(.GET, "categories", afterResponse: { res async throws in
+            try await app.testing().test(.GET, "api/categories", afterResponse: { res async throws in
                 #expect(res.status == .ok)
                 #expect(try res.content.decode([CategoryDTO].self).sorted(by: { ($0.name ?? "") < ($1.name ?? "") }) ==
                         saved.map { $0.toDTO() }.sorted(by: { ($0.name ?? "") < ($1.name ?? "") }))
@@ -148,7 +148,7 @@ struct shopTests {
 
             let dto = CategoryDTO(id: nil, name: "new-cat", productIDs: [try p1.requireID(), try p2.requireID()])
 
-            try await app.testing().test(.POST, "categories", beforeRequest: { req in
+            try await app.testing().test(.POST, "api/categories", beforeRequest: { req in
                 try req.content.encode(dto)
             }, afterResponse: { res async throws in
                 #expect(res.status == .ok)
@@ -174,7 +174,7 @@ struct shopTests {
             let saved = try await Category.query(on: app.db).filter(\._$id == c.id!).with(\.$products).first()
             #expect(saved != nil)
 
-            try await app.testing().test(.GET, "categories/\(c.requireID())", afterResponse: { res async throws in
+            try await app.testing().test(.GET, "api/categories/\(c.requireID())", afterResponse: { res async throws in
                 #expect(res.status == .ok)
                 let dto = try res.content.decode(CategoryDTO.self)
                 #expect(dto == saved!.toDTO())
@@ -203,7 +203,7 @@ struct shopTests {
             // update by replacing in association p1 with p3 and keeping p2
             let updateDTO = CategoryDTO(id: nil, name: "updated-name", productIDs: [try p2.requireID(), try p3.requireID()])
 
-            try await app.testing().test(.PATCH, "categories/\(cat.requireID())", beforeRequest: { req in
+            try await app.testing().test(.PATCH, "api/categories/\(cat.requireID())", beforeRequest: { req in
                 try req.content.encode(updateDTO)
             }, afterResponse: { res async throws in
                 #expect(res.status == .ok)
@@ -226,7 +226,7 @@ struct shopTests {
             try await c.create(on: app.db)
             try await c.$products.attach(p, on: app.db)
 
-            try await app.testing().test(.DELETE, "categories/\(c.requireID())", afterResponse: { res async throws in
+            try await app.testing().test(.DELETE, "api/categories/\(c.requireID())", afterResponse: { res async throws in
                 #expect(res.status == .noContent)
                 let found = try await Category.find(c.id, on: app.db)
                 #expect(found == nil)
@@ -249,7 +249,7 @@ struct shopTests {
 
             let dto = ProductDTO(id: nil, title: "prod-with-cats", price: 999, categoryIDs: [try c1.requireID(), try c2.requireID()])
 
-            try await app.testing().test(.POST, "products", beforeRequest: { req in
+            try await app.testing().test(.POST, "api/products", beforeRequest: { req in
                 try req.content.encode(dto)
             }, afterResponse: { res async throws in
                 #expect(res.status == .ok)
@@ -278,7 +278,7 @@ struct shopTests {
             // remove cOld, keep cKeep, add cAdd
             let updateDTO = ProductDTO(id: nil, title: nil, price: nil, categoryIDs: [try cKeep.requireID(), try cAdd.requireID()])
 
-            try await app.testing().test(.PATCH, "products/\(prod.requireID())", beforeRequest: { req in
+            try await app.testing().test(.PATCH, "api/products/\(prod.requireID())", beforeRequest: { req in
                 try req.content.encode(updateDTO)
             }, afterResponse: { res async throws in
                 #expect(res.status == .ok)
@@ -296,7 +296,7 @@ struct shopTests {
         let newDTO = StickyNoteDTO(id: nil, title: "test1", validSince: now, validUntil: now.addingTimeInterval(3600))
         
         try await withApp { app in
-            try await app.testing().test(.POST, "sticky-notes", beforeRequest: { req in
+            try await app.testing().test(.POST, "api/sticky-notes", beforeRequest: { req in
                 try req.content.encode(newDTO)
             }, afterResponse: { res async throws in
                 #expect(res.status == .ok)
@@ -321,7 +321,7 @@ struct shopTests {
             let saved = try await StickyNote.query(on: app.db).filter(\._$id == note.id!).first()
             #expect(saved != nil)
 
-            try await app.testing().test(.GET, "sticky-notes/\(note.requireID())", afterResponse: { res async throws in
+            try await app.testing().test(.GET, "api/sticky-notes/\(note.requireID())", afterResponse: { res async throws in
                 #expect(res.status == .ok)
                 let dto = try res.content.decode(StickyNoteDTO.self)
                 #expect(dto == saved!.toDTO())
@@ -341,7 +341,7 @@ struct shopTests {
             let newUntil = now.addingTimeInterval(7200)
             let updateDTO = StickyNoteDTO(id: nil, title: newTitle, validSince: newSince, validUntil: newUntil)
 
-            try await app.testing().test(.PATCH, "sticky-notes/\(note.requireID())", beforeRequest: { req in
+            try await app.testing().test(.PATCH, "api/sticky-notes/\(note.requireID())", beforeRequest: { req in
                 try req.content.encode(updateDTO)
             }, afterResponse: { res async throws in
                 #expect(res.status == .ok)
@@ -363,7 +363,7 @@ struct shopTests {
         try await withApp { app in
             try await testStickyNotes.create(on: app.db)
             
-            try await app.testing().test(.DELETE, "sticky-notes/\(testStickyNotes[0].requireID())", afterResponse: { res async throws in
+            try await app.testing().test(.DELETE, "api/sticky-notes/\(testStickyNotes[0].requireID())", afterResponse: { res async throws in
                 #expect(res.status == .noContent)
                 let model = try await Product.find(testStickyNotes[0].id, on: app.db)
                 #expect(model == nil)

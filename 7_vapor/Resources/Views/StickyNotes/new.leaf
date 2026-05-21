@@ -1,0 +1,51 @@
+#extend("base"):
+  #export("title"):
+    Create Sticky Note
+  #endexport
+
+  #export("body"):
+    <h1>Create Sticky Note</h1>
+
+    <form action="/api/sticky-notes" method="post" id="note-form">
+      <label>
+        Title<br>
+        <input type="text" name="title">
+      </label><br>
+
+      <label>
+        Valid Since<br>
+        <input type="date" id="validSincePicker">
+        <input type="hidden" name="validSince" id="validSince">
+      </label><br>
+
+      <label>
+        Valid Until<br>
+        <input type="date" id="validUntilPicker">
+        <input type="hidden" name="validUntil" id="validUntil">
+      </label><br>
+
+      <button type="submit">Create</button>
+    </form>
+
+    <a href="/sticky-notes">Back to Index</a>
+
+    <script>
+    document.getElementById("note-form").addEventListener("submit", () => {
+      const sincePicker = document.getElementById("validSincePicker");
+      const sinceHidden = document.getElementById("validSince");
+
+      const untilPicker = document.getElementById("validUntilPicker");
+      const untilHidden = document.getElementById("validUntil");
+
+      if (sincePicker.value && sincePicker.value !== "") {
+        sinceHidden.value = sincePicker.value + "T00:00:00Z";
+      }
+
+      if (untilPicker.value && untilPicker.value !== "") {
+        untilHidden.value = untilPicker.value + "T00:00:00Z";
+      }
+    });
+    </script>
+
+  #endexport
+#endextend
