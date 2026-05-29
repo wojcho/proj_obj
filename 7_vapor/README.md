@@ -11,7 +11,7 @@ https://www.heroku.com/github-students
 - :white_check_mark: 3.5 Należy stworzyć szablony w Leaf [Commit](https://github.com/wojcho/proj_obj/commit/cfc67dace5b3d38e2b32c9974ac2156063c76bb0)
 - :white_check_mark: 4.0 Należy stworzyć drugi model oraz kontroler Kategorii wraz z relacją [Commit](https://github.com/wojcho/proj_obj/commit/05fc49728763a771f91051bdcdc095fefa5a8465)
 - :white_check_mark: 4.5 Należy wykorzystać Redis do przechowywania danych [Commit](https://github.com/wojcho/proj_obj/commit/4772b1d80acc44cae1d9dc6ba2365fdf223a9ad0)
-- :x: <!-- :white_check_mark: --> 5.0 Wrzucić aplikację na Heroku ~~[Commit]()~~
+- :x: <!-- :white_check_mark: --> 5.0 Wrzucić aplikację na Heroku (może być też inny service provider) ~~[Commit]()~~
 
 [Nagranie](https://github.com/wojcho/proj_obj/blob/main/7_vapor/video.mp4)
 
