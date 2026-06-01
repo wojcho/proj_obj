@@ -10,7 +10,7 @@ import org.springframework.web.server.ResponseStatusException
 import org.springframework.http.HttpStatus
 import org.springframework.beans.factory.annotation.Autowired
 
-private val userHelloSecrets = mapOf("premier" to "Handling of this information requires utmost secrecy")
+private val userHelloSecrets = mapOf("premier@gov.pl" to "Handling of this information requires utmost secrecy")
 
 @RestController
 class SecretController @Autowired constructor(private val authorization: LazyAuthorization) {

@@ -11,6 +11,6 @@ class LazyAuthorization {
     }
   }
   fun isAuthorized(username: String, password: String): Boolean {
-    return username == "premier" && password == "admin1";
+    return username == "premier@gov.pl" && password == "admin1";
   }
 }
